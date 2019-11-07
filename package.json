@@ -1,0 +1,18 @@
+{
+  "name": "powerstation",
+  "version": "1.0.0",
+  "description": "For powerstation api and mqtt",
+  "main": "app.js",
+  "scripts": {
+    "test": "npm run start"
+  },
+  "author": "s9443112",
+  "license": "ISC",
+  "dependencies": {
+    "error-helper": "git+https://gitlab+deploy-token-68623:4VjEJwV1j_D2TUV1CRwf@gitlab.com/karta0807913/error-helper.git",
+    "express": "^4.17.1",
+    "express-async-errors": "^3.1.1",
+    "mysql2": "^1.6.5",
+    "sequelize": "^6.0.0"
+  }
+}
