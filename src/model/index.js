@@ -52,3 +52,18 @@ async function sync_all() {
 var relative = async (table1, relationship, table2, options) => {
     await model[table1][relationship](model[table2], options);
 };
+
+helper("city")
+helper("station")
+helper("sensing_data")
+
+
+relative("city", "hasMany", "station", { as: "relate_station", foreignKey: "city_id", sourceKey: "city_id" });
+relative("station", "hasMany", "sensing_data", { as: "relate_sense", foreignKey: "station_id", sourceKey: "station_id" });
+
+sync_all();
+
+model.Op = sequelize.Op;
+model.fn = sequelize.fn;
+model.col = sequelize.col;
+module.exports = model;

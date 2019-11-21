@@ -1,9 +1,9 @@
 const config = {
     DB: {
-        database: "pay_server",
-        user_name: "TestAccount",
-        password: "a23387696",
-        host: "luhao.com.tw"
+        database: "powerstation",
+        user_name: "tre290100",
+        password: "tre290101",
+        host: "127.0.0.1"
     },
 }
 
