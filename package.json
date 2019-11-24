@@ -4,7 +4,7 @@
   "description": "For powerstation api and mqtt",
   "main": "app.js",
   "scripts": {
-    "start": "env MYSQL_LOG=true node src/app.js"
+    "start": "node src/app.js"
   },
   "author": "s9443112",
   "license": "ISC",
@@ -12,6 +12,7 @@
     "error-helper": "git+https://gitlab+deploy-token-68623:4VjEJwV1j_D2TUV1CRwf@gitlab.com/karta0807913/error-helper.git",
     "express": "^4.17.1",
     "express-async-errors": "^3.1.1",
+    "mqtt": "^3.0.0",
     "mysql2": "^1.7.0",
     "sequelize": "^6.0.0"
   }

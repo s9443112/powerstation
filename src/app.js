@@ -1,6 +1,6 @@
 const sequelize = require("sequelize");
 const express = require("express");
-var bodyParser = require('body-parser')
+
 
 const public = require("./router/public.js");
 
@@ -8,8 +8,6 @@ var { ErrorTypes, BasicError } = require("error-helper");
 
 
 app = express();
-
-app.use(bodyParser.json())
 app.use("/public", public);
 
 
@@ -26,7 +24,13 @@ app.use(function (err, req, res, next) {
 });
 
 app.use(function (req, res) { res.status(404).json({ status: "404 Not Found" }); });
+
+
+
+
 app.listen(8000);
+
+
 
 process.on('unhandledRejection', error => {
     console.log("unhandledRejection: ");

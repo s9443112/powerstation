@@ -15,28 +15,28 @@ module.exports = function (sequelize, DataTypes) {
         hot_water_temp: {
             type: DataTypes.FLOAT(25,3),
             comment: '熱水溫度',
-            allowNull: false
+            allowNull: true
         },
         cold_water_temp: {
             type: DataTypes.FLOAT(25,3),
             comment: '冷水溫度',
-            allowNull: false
+            allowNull: true
         },
         cold_water_temp2: {
             type: DataTypes.FLOAT(25,3),
             comment: '冷水溫度2',
-            allowNull: false
+            allowNull: true
         },
 
         vol: {
             type: DataTypes.FLOAT(25,3),
             comment: '電壓',
-            allowNull: false
+            allowNull: true
         },
         current: {
             type: DataTypes.FLOAT(25,3),
             comment: '電流',
-            allowNull: false
+            allowNull: true
         },
         comment: {
             type: DataTypes.TEXT,
