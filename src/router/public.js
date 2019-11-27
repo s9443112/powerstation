@@ -131,58 +131,94 @@ router.post("/powerstation/:station_id", CommonMiddleware.nothing, async (req, r
 
 })
 
-router.post("/powerstation/date_averge/:station_id", CommonMiddleware.parse_body, async (req, res, next) => {
-    let station_id = req.params.station_id;
-    var datetime = ''
-    if (req.body["datetime"]) {
-        return next(new ErrorTypes.VerifyError(`You didn;t give me datetime.`, "ERROR_DATETIME"));
-    }
+// router.post("/powerstation/date_averge/:station_id", CommonMiddleware.parse_body, async (req, res, next) => {
+//     let station_id = req.params.station_id;
+//     var datetime = ''
+//     if (req.body["datetime"]) {
+//         return next(new ErrorTypes.VerifyError(`You didn;t give me datetime.`, "ERROR_DATETIME"));
+//     }
 
+//     station_id = parseInt(station_id)
+//     if (isNaN(station_id)) {
+//         return next(new ErrorTypes.VerifyError(`Station ID not a number.`, "ERROR_STATION_ID"));
+//     }
+//     let data = ''
+//     let selector = {}
+//     selector["station_id"] = station_id
+//     if (datetime != '') {
+//         selector["create_at"] = datetime
+//     }
+//     data = await model.sensing_data.findAll({
+//         attributes: [[model.fn('AVG', model.col('hot_water_temp')), 'hot_water_temp_AVG'], [model.fn('AVG', model.col('cold_water_temp')), 'cold_water_temp_AVG'], [model.fn('AVG', model.col('cold_water_temp2')), 'cold_water_temp2_AVG'], [model.fn('AVG', model.col('vol')), 'vol_AVG'], [model.fn('AVG', model.col('current')), 'current_AVG']], where: selector
+//     })
+
+//     res.json(data)
+
+// })
+
+
+// router.post("/powerstation/averge/:station_id", CommonMiddleware.parse_body, async (req, res, next) => {
+//     let station_id = req.params.station_id;
+//     var datetime = ''
+
+//     if (req.body["datetime"]) {
+//         datetime = req.body.datetime
+//     }
+
+//     station_id = parseInt(station_id)
+//     if (isNaN(station_id)) {
+//         return next(new ErrorTypes.VerifyError(`Station ID not a number.`, "ERROR_STATION_ID"));
+//     }
+//     let data = ''
+//     let selector = {}
+//     selector["station_id"] = station_id
+//     if (datetime == '') {
+
+//         data = await model.sensing_data.findAll({
+//             attributes: [[model.fn('AVG', model.col('hot_water_temp')), 'hot_water_temp_AVG'], [model.fn('AVG', model.col('cold_water_temp')), 'cold_water_temp_AVG'], [model.fn('AVG', model.col('cold_water_temp2')), 'cold_water_temp2_AVG'], [model.fn('AVG', model.col('vol')), 'vol_AVG'], [model.fn('AVG', model.col('current')), 'current_AVG']], where: selector
+//         })
+//     } else {
+//         selector["create_at"] = { [model.Op.gte]: datetime }
+//         data = await model.sensing_data.findAll({
+//             attributes: [[model.fn('AVG', model.col('hot_water_temp')), 'hot_water_temp_AVG'], [model.fn('AVG', model.col('cold_water_temp')), 'cold_water_temp_AVG'], [model.fn('AVG', model.col('cold_water_temp2')), 'cold_water_temp2_AVG'], [model.fn('AVG', model.col('vol')), 'vol_AVG'], [model.fn('AVG', model.col('current')), 'current_AVG']], where: selector
+//         })
+//     }
+//     res.json(data)
+// })
+
+
+router.post("/powerstation/averge/:station_id",CommonMiddleware.parse_body,async(req,res,next)=>{
+    let station_id = req.params.station_id;
+    let starttime = ''
+    let endtime = ''
     station_id = parseInt(station_id)
     if (isNaN(station_id)) {
         return next(new ErrorTypes.VerifyError(`Station ID not a number.`, "ERROR_STATION_ID"));
     }
-    let data = ''
-    let selector = {}
-    selector["station_id"] = station_id
-    if (datetime != '') {
-        selector["create_at"] = datetime
+    if(!req.body["starttime"]){
+        return next(new ErrorTypes.VerifyError(`No start time.`, "ERROR_TIME_START"));
     }
+    starttime = req.body.starttime
+    
+    if(!req.body["endtime"]){
+        endtime = new Date().Format("yyyy-MM-dd hh:mm:ss")
+       
+    }
+
+    let data = ''
+    let selector = {
+        "station_id":station_id,
+        "create_at":{[model.Op.between]: [starttime, endtime]}
+    }
+    // console.log($between)
+    
+    
     data = await model.sensing_data.findAll({
         attributes: [[model.fn('AVG', model.col('hot_water_temp')), 'hot_water_temp_AVG'], [model.fn('AVG', model.col('cold_water_temp')), 'cold_water_temp_AVG'], [model.fn('AVG', model.col('cold_water_temp2')), 'cold_water_temp2_AVG'], [model.fn('AVG', model.col('vol')), 'vol_AVG'], [model.fn('AVG', model.col('current')), 'current_AVG']], where: selector
     })
-
     res.json(data)
+    
 
-})
-
-
-router.post("/powerstation/averge/:station_id", CommonMiddleware.parse_body, async (req, res, next) => {
-    let station_id = req.params.station_id;
-    var datetime = ''
-    if (req.body["datetime"]) {
-        datetime = req.body.datetime
-    }
-
-    station_id = parseInt(station_id)
-    if (isNaN(station_id)) {
-        return next(new ErrorTypes.VerifyError(`Station ID not a number.`, "ERROR_STATION_ID"));
-    }
-    let data = ''
-    let selector = {}
-    selector["station_id"] = station_id
-    if (datetime == '') {
-
-        data = await model.sensing_data.findAll({
-            attributes: [[model.fn('AVG', model.col('hot_water_temp')), 'hot_water_temp_AVG'], [model.fn('AVG', model.col('cold_water_temp')), 'cold_water_temp_AVG'], [model.fn('AVG', model.col('cold_water_temp2')), 'cold_water_temp2_AVG'], [model.fn('AVG', model.col('vol')), 'vol_AVG'], [model.fn('AVG', model.col('current')), 'current_AVG']], where: selector
-        })
-    } else {
-        selector["create_at"] = { [model.Op.gte]: datetime }
-        data = await model.sensing_data.findAll({
-            attributes: [[model.fn('AVG', model.col('hot_water_temp')), 'hot_water_temp_AVG'], [model.fn('AVG', model.col('cold_water_temp')), 'cold_water_temp_AVG'], [model.fn('AVG', model.col('cold_water_temp2')), 'cold_water_temp2_AVG'], [model.fn('AVG', model.col('vol')), 'vol_AVG'], [model.fn('AVG', model.col('current')), 'current_AVG']], where: selector
-        })
-    }
-    res.json(data)
 })
 
 router.get("/powerstation/now/:station_id", CommonMiddleware.nothing, async function (req, res, next) {
