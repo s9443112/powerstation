@@ -203,7 +203,10 @@ router.post("/powerstation/averge/:station_id",CommonMiddleware.parse_body,async
     if(!req.body["endtime"]){
         endtime = new Date().Format("yyyy-MM-dd hh:mm:ss")
        
+    }else{
+        endtime = new Date(req.body.endtime).Format("yyyy-MM-dd hh:mm:ss")
     }
+    
 
     let data = ''
     let selector = {
