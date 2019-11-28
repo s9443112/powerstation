@@ -27,13 +27,12 @@ client.on("message", async function (topic, message) {
     // console.log(message.toString())
     // console.log(topic)
     if (topic == "powerstation") {
-        var keys = ["hot_water_temp", "cold_water_temp", "cold_water_temp2", "vol", "current"] 
+        var keys = ["hwt", "cwt", "cwt2", "vol", "i"] 
         msg = JSON.parse(message.toString())
         console.log(msg)
         var data = {}
         //檢查是否有帶station_id
         if (!msg.hasOwnProperty("station_id")) {
-            console.log("1")
             return
         }
         data["station_id"] = msg.station_id
@@ -41,7 +40,6 @@ client.on("message", async function (topic, message) {
         //檢查station_id 是否存在
         var check_id = await model.station.findOne({ where: { "station_id": msg.station_id } })
         if (check_id == null){
-            console.log("2")
             return 
         }
 
@@ -55,6 +53,14 @@ client.on("message", async function (topic, message) {
             data[keys[key]] = msg[keys[key]]
         }
         console.log(data)
+        var new_data = {
+            "station_id":data["station_id"],
+            "hot_water_temp":data["hwt"],
+            "cold_water_temp":data["cwt"],
+            "cold_water_temp2":data["cwt2"],
+            "vol":data["vol"],
+            "current":data["i"]
+        }
 
 
         await model.sensing_data.create(data)
@@ -219,7 +225,7 @@ router.post("/powerstation/averge/:station_id",CommonMiddleware.parse_body,async
     data = await model.sensing_data.findAll({
         attributes: [[model.fn('AVG', model.col('hot_water_temp')), 'hot_water_temp_AVG'], [model.fn('AVG', model.col('cold_water_temp')), 'cold_water_temp_AVG'], [model.fn('AVG', model.col('cold_water_temp2')), 'cold_water_temp2_AVG'], [model.fn('AVG', model.col('vol')), 'vol_AVG'], [model.fn('AVG', model.col('current')), 'current_AVG']], where: selector
     })
-    res.json(data)
+    res.json(data[0])
     
 
 })

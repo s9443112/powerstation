@@ -23,11 +23,11 @@ client.on("connect", function () {
                 var current = 1
                 var data = {
                     "station_id": i,
-                    "hot_water_temp": hot,
-                    "cold_water_temp": cold,
-                    "cold_water_temp2": cold2,
+                    "hwt": hot,
+                    "cwt": cold,
+                    "cwt2": cold2,
                     "vol": vol,
-                    "current": current
+                    "i": current
                 }
                 client.publish("powerstation", JSON.stringify(data))
 
