@@ -63,7 +63,7 @@ client.on("message", async function (topic, message) {
         }
 
 
-        await model.sensing_data.create(data)
+        await model.sensing_data.create(new_data)
         // var x = {
         //     "station_id":1,
         //     "hot_water_temp":100,
