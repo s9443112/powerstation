@@ -19,8 +19,8 @@ client.on("connect", function () {
                 var hot = Math.floor(Math.random() * (100 - 70 + 1)) + 70;
                 var cold = Math.floor(Math.random() * (20 - 0 + 1)) + 0;
                 var cold2 = Math.floor(Math.random() * (20 - 0 + 1)) + 0;
-                var vol = 5
-                var current = 1
+                var vol = Math.floor(Math.random() * (28 - 24 + 1)) + 24;
+                var current = Math.floor(Math.random() * (1 - 0.5)) + 0.5;
                 var data = {
                     "station_id": i,
                     "hwt": hot,
