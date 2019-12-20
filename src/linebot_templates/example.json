@@ -1,0 +1,84 @@
+{
+    "type": "bubble",
+    "hero": {
+      "type": "image",
+      "url": "https://ithelp.ithome.com.tw/images/ironman/11th/event/kv_event/kv-bg-addfly.png",
+      "size": "full",
+      "aspectRatio": "20:13",
+      "aspectMode": "cover",
+      "action": {
+        "type": "uri",
+        "uri": "http://linecorp.com/"
+      },
+      "backgroundColor": "#FFFFFF"
+    },
+    "body": {
+      "type": "box",
+      "layout": "vertical",
+      "contents": [
+        {
+          "type": "text",
+          "text": "Menu",
+          "weight": "bold",
+          "size": "xl",
+          "margin": "md"
+        },
+        {
+          "type": "text",
+          "text": "Please select",
+          "margin": "md"
+        },
+        {
+          "type": "spacer"
+        }
+      ],
+      "action": {
+        "type": "uri",
+        "label": "View detail",
+        "uri": "http://linecorp.com/",
+        "altUri": {
+          "desktop": "http://example.com/page/123"
+        }
+      }
+    },
+    "footer": {
+      "type": "box",
+      "layout": "vertical",
+      "spacing": "sm",
+      "contents": [
+        {
+          "type": "button",
+          "action": {
+            "type": "postback",
+            "label": "Buy",
+            "data": "action=buy&itemid=123"
+          },
+          "height": "sm"
+        },
+        {
+          "type": "button",
+          "action": {
+            "type": "message",
+            "label": "it 邦幫忙鐵人賽",
+            "text": "it 邦幫忙鐵人賽"
+          },
+          "height": "sm"
+        },
+        {
+          "type": "button",
+          "action": {
+            "type": "uri",
+            "label": "View detail",
+            "uri": "https://ithelp.ithome.com.tw/2020ironman"
+          },
+          "height": "sm"
+        }
+      ],
+      "flex": 0
+    },
+    "styles": {
+      "footer": {
+        "separator": true
+      }
+    }
+  }

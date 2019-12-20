@@ -4,12 +4,15 @@ var option = {
     password: "a23387696"
 }
 const client = mqtt.connect("mqtt://luhao.com.tw", option)
-
+var topic = "powerstation"
 client.on("connect", function () {
     console.log("Success connect mqtt broker.")
-    client.subscribe("powerstation", function (err) {
+    if (process.env.UNIT_TEST){
+        topic = "testpowerstation"
+    }
+    client.subscribe(topic, function (err) {
         if (!err) {
-            console.log("Success subscribe powerstation topic.")
+            console.log(`Success subscribe ${topic} topic.`)
         }
 
         setInterval(() => {
@@ -29,12 +32,12 @@ client.on("connect", function () {
                     "vol": vol,
                     "i": current
                 }
-                client.publish("powerstation", JSON.stringify(data))
+                client.publish(topic, JSON.stringify(data))
 
             }
 
 
-        }, 60000);
+        }, 5000);
     })
 })
 

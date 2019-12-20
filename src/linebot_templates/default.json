@@ -1,0 +1,70 @@
+{
+    "type": "bubble",
+    
+    "hero": {
+        "type": "image",
+        "url": "https://wdsa.nttu.edu.tw/var/file/9/1009/img/background.jpg",
+        "aspectRatio": "20:13",
+        "aspectMode": "cover",
+        "size":"full",
+        "action": {
+            "type": "uri",
+            "uri": "https://se.nttu.edu.tw"
+        },
+        "backgroundColor": "#FFFFFF"
+    },
+    "body": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+            {
+                "type": "text",
+                "text": "小幫手 Menu",
+                "weight": "bold",
+                "size": "xl",
+                "margin": "md"
+            },
+            {
+                "type": "text",
+                "text": "Please select an item",
+                "margin": "md"
+            },
+            {
+                "type": "spacer"
+            }
+        ]
+        
+    },
+    "footer": {
+        "type": "box",
+        "layout": "vertical",
+        "spacing": "sm",
+        "contents": [
+            
+            {
+                "type": "button",
+                "action": {
+                    "type": "message",
+                    "label": "查詢城市",
+                    "text": "查詢城市"
+                },
+                "height": "sm"
+            },
+            {
+                "type": "button",
+                "action": {
+                    "type": "message",
+                    "label": "顯示所有城市",
+                    "text": "顯示所有城市"
+                },
+                "height": "sm"
+            }
+        ],
+        "flex": 0
+    },
+    "styles": {
+        "footer": {
+            "separator": true
+        }
+    }
+}

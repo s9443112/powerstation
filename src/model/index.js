@@ -13,7 +13,6 @@ function log_mysql(mysql, model) {
 const model = new sequelize.Sequelize(config.DB.database, config.DB.user_name, config.DB.password, {
     host: config.DB.host,     //資料庫位置
     dialect: 'mysql',         //使用mysql
-    timezone: "+8:00",//時區
     define: {
         underscored: false,
         freezeTableName: true,
@@ -53,6 +52,7 @@ var relative = async (table1, relationship, table2, options) => {
     await model[table1][relationship](model[table2], options);
 };
 
+helper("user")
 helper("city")
 helper("station")
 helper("sensing_data")

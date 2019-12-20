@@ -1,0 +1,27 @@
+version: "1"
+
+networks:
+  powerstation-networks:
+    driver: bridge
+  
+services:
+  powerstation:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    ports:
+      - 0.0.0.0:8000:8000
+    networks:
+      - powerstation-networks
+
+  # mysql:
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: "@61797015"
+  #     MYSQL_USER: "root"
+  #     MYSQL_PASS: "61797015"
+  #   image: "mysql/mysql-server:5.7"
+  #   container_name: "powerstation-mysql"
+  #   ports: 
+  #     - "3306:3306"
+  #   networks:
+  #     - powerstation-networks
