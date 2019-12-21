@@ -33,6 +33,8 @@ bot.on('message', async function (event) {
     var find_index = 1
     var user_index = 0
 
+
+
     /**
      * 搜尋使用者uuid
      * 如果搜尋不到，就新增一筆object，放進array裡面
@@ -49,13 +51,31 @@ bot.on('message', async function (event) {
 
     }
 
+    if (event.message.text == "help" || event.message.text == "menu") {
+        var copy = JSON.parse(JSON.stringify(flex))
+        copy.footer.contents.splice(1, 1)
+
+        user_status[user_index].action = 0
+
+        event.reply({
+            type: 'flex',
+            altText: 'this is a flex message',
+            contents: copy
+        }).catch(error => {
+            console.log(error)
+        })
+        return;
+
+    }
+
 
     switch (user_status[user_index].action) {
 
         case 1:
             let city_station = []
-            console.log("case 1")
-            if (event.message.text == "now") {
+            var msg = JSON.parse(event.message.text)
+            if (msg.todo == "now") {
+                console.log(user_status[user_index].city_name)
                 var data = await model.city.findOne({
                     include: [
                         {
@@ -73,7 +93,7 @@ bot.on('message', async function (event) {
                         }
 
                     ],
-                    where: { "city_name": user_status[user_index].city_name }
+                    where: { "city_name": msg.city_name }
                 })
 
                 if (data == null) {
@@ -87,7 +107,7 @@ bot.on('message', async function (event) {
                 // user_status[user_index].action = 1
 
 
-                
+
                 for (let key = 0; key < data.relate_station.length; key++) {
                     var city_template = require("../linebot_templates/city.json")
                     var copy = JSON.parse(JSON.stringify(city_template))
@@ -111,37 +131,72 @@ bot.on('message', async function (event) {
 
                 }
 
-            } else if (event.message.text == "averge") {
+            } else if (msg.todo == "averge") {
                 console.log("averge")
-                var data = await model.city.findOne({
+
+                var check = await model.city.findOne({ where: { "city_name": msg.city_name } })
+
+                if (check == null) {
+                    event.reply("沒有此城市")
+                    break;
+                }
+
+                var data = await model.station.findAll({
                     raw: true,
                     include: [
                         {
-                            model: model.station,
-                            as: 'relate_station',
                             raw: true,
-                            attributes: ['station_id', "station_name", 'comment'],
-                            include: [
-                                {
-                                    model: model.sensing_data,
-                                    as: "relate_sense",
-                                    attributes: [
-                                        [model.fn('AVG', model.col('hot_water_temp')), 'hot_water_temp_AVG'],
-                                        [model.fn('AVG', model.col('cold_water_temp')), 'cold_water_temp_AVG'],
-                                        [model.fn('AVG', model.col('cold_water_temp2')), 'cold_water_temp2_AVG'],
-                                        [model.fn('AVG', model.col('vol')), 'vol_AVG'],
-                                        [model.fn('AVG', model.col('current')), 'current_AVG']
-                                    ],
-                                    group: ["station.station.id"]
-                                }
+                            model: model.sensing_data,
+                            as: "relate_sense",
+                            attributes: [
+                                "station_id",
+                                [model.fn('AVG', model.col('hot_water_temp')), 'hot_water_temp_AVG'],
+                                [model.fn('AVG', model.col('cold_water_temp')), 'cold_water_temp_AVG'],
+                                [model.fn('AVG', model.col('cold_water_temp2')), 'cold_water_temp2_AVG'],
+                                [model.fn('AVG', model.col('vol')), 'vol_AVG'],
+                                [model.fn('AVG', model.col('current')), 'current_AVG']
                             ],
-                        }
+                            group: ["relate_sense.station_id"],
 
+                        }
                     ],
-                    attributes:[],
-                    where: { "city_name": user_status[user_index].city_name }
+                    group: ["relate_sense.station_id", "station_name"],
+                    attributes: ["station_name"],
+                    where: { "city_id": check.city_id }
                 })
+
                 console.log(JSON.stringify(data))
+                if (data.length == 0) {
+                    event.reply("這個城市裡面沒有任何廠商")
+                    break;
+                }
+
+                for (let key = 0; key < data.length; key++) {
+                    var city_template = require("../linebot_templates/city.json")
+                    var copy = JSON.parse(JSON.stringify(city_template))
+
+                    copy.body.contents[0].text = msg.city_name
+                    copy.body.contents[1].text = data[key].station_name
+                    copy.body.contents[2].text = "沒有設定地址"
+                    copy.body.contents[4].contents[0].contents[0].text = "平均熱水溫度"
+                    copy.body.contents[4].contents[0].contents[1].text = `${data[key]["relate_sense.hot_water_temp_AVG"]}°C`
+                    copy.body.contents[4].contents[1].contents[0].text = "平均冷水溫度1"
+                    copy.body.contents[4].contents[1].contents[1].text = `${data[key]["relate_sense.cold_water_temp_AVG"]}°C`
+                    copy.body.contents[4].contents[2].contents[0].text = "平均冷水溫度2"
+                    copy.body.contents[4].contents[2].contents[1].text = `${data[key]["relate_sense.cold_water_temp2_AVG"]}°C`
+                    copy.body.contents[4].contents[3].contents[0].text = "平均電壓"
+                    copy.body.contents[4].contents[3].contents[1].text = `${data[key]["relate_sense.vol_AVG"]}V`
+                    copy.body.contents[4].contents[4].contents[0].text = "平均電流"
+                    copy.body.contents[4].contents[4].contents[1].text = `${data[key]["relate_sense.current_AVG"]}A`
+                    copy.body.contents[6].contents[0].text = "時間"
+                    copy.body.contents[6].contents[1].text = `${new Date().toLocaleString()}`
+                    city_station.push(copy)
+
+                }
+
+
+
+
 
             }
 
@@ -155,30 +210,6 @@ bot.on('message', async function (event) {
                 }
             })
 
-
-            搜尋所有感測裝置的平均值
-            var data = await model.station.findAll({
-                raw: true,
-                include: [
-                    {
-                        model: model.sensing_data,
-                        as: "relate_sense",
-                        attributes: [
-
-                            [model.fn('AVG', model.col('hot_water_temp')), 'hot_water_temp_AVG'],
-                            [model.fn('AVG', model.col('cold_water_temp')), 'cold_water_temp_AVG'],
-                            [model.fn('AVG', model.col('cold_water_temp2')), 'cold_water_temp2_AVG'],
-                            [model.fn('AVG', model.col('vol')), 'vol_AVG'],
-                            [model.fn('AVG', model.col('current')), 'current_AVG']
-                        ],
-                        group: ["station.station.id"]
-                    }
-                ],
-                attributes: [],
-
-            })
-            // console.log(JSON.stringify(data))
-            console.log(data)
             break;
 
         case 2:
@@ -187,7 +218,9 @@ bot.on('message', async function (event) {
         case 0:
         default:
             console.log("case default")
+
             switch (event.message.text) {
+
                 case "menu":
                     var copy = JSON.parse(JSON.stringify(flex))
                     copy.footer.contents.splice(1, 1)
@@ -213,15 +246,15 @@ bot.on('message', async function (event) {
                         copy.body.contents[0].text = data[key]["city_name"]
                         copy.body.contents[1].text = "請選擇你要用的功能"
 
-                        copy.footer.contents[0].action.text = "now"
+                        copy.footer.contents[0].action.text = `{"city_name":"${data[key]["city_name"]}","todo":"now"}`
                         copy.footer.contents[0].action.label = `查詢${data[key]["city_name"]}發電廠`
-                        copy.footer.contents[1].action.text = "averge"
+                        copy.footer.contents[1].action.text = `{"city_name":"${data[key]["city_name"]}","todo":"averge"}`
                         copy.footer.contents[1].action.label = `查看${data[key]["city_name"]}地區溫濕度總平均`
                         city.push(copy)
                     }
 
                     user_status[user_index].action = 1
-                    user_status[user_index]["city_name"] = data[0]["city_name"]
+
                     event.reply({
                         type: "flex",
                         altText: 'This is a flex message',
@@ -235,9 +268,6 @@ bot.on('message', async function (event) {
                     if (!event.message.text) {
                         return;
                     }
-
-
-
                     break;
 
             }
