@@ -9,7 +9,7 @@
   "author": "s9443112",
   "license": "ISC",
   "dependencies": {
-    "error-helper": "git+https://gitlab+deploy-token-68623:4VjEJwV1j_D2TUV1CRwf@gitlab.com/karta0807913/error-helper.git",
+    "error-helper": "https://github.com/s9443112/error-helper.git",
     "express": "^4.17.1",
     "express-async-errors": "^3.1.1",
     "linebot": "^1.5.3",
