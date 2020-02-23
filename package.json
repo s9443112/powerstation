@@ -4,7 +4,7 @@
   "description": "For powerstation api and mqtt",
   "main": "app.js",
   "scripts": {
-    "start": "node src/app.js"
+    "start": "MYSQL_LOG=1 node src/app.js "
   },
   "author": "s9443112",
   "license": "ISC",

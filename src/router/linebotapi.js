@@ -106,7 +106,7 @@ bot.on('message', async function (event) {
                 }
                 // user_status[user_index].action = 1
 
-
+                console.log(JSON.stringify(data))
 
                 for (let key = 0; key < data.relate_station.length; key++) {
                     var city_template = require("../linebot_templates/city.json")

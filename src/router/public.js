@@ -7,7 +7,7 @@ const model = require("../model");
 const { ErrorTypes } = require("../middleware");
 
 var entopic = "powerstation"
-if (process.env.UNIT_TEST){
+if (process.env.UNIT_TEST) {
     entopic = "testpowerstation"
 }
 
@@ -183,6 +183,54 @@ router.post("/powerstation/averge/:station_id", CommonMiddleware.parse_body, asy
     })
     res.json(data[0])
 
+})
+
+
+//
+router.post("/powerstation/averge_everyday/:station_id", CommonMiddleware.parse_body, async (req, res, next) => {
+    let station_id = req.params.station_id;
+    let starttime = ''
+    let endtime = ''
+    station_id = parseInt(station_id)
+    if (isNaN(station_id)) {
+        return next(new ErrorTypes.VerifyError(`Station ID not a number.`, "ERROR_STATION_ID"));
+    }
+    if (!req.body["starttime"]) {
+        return next(new ErrorTypes.VerifyError(`No start time.`, "ERROR_TIME_START"));
+    }
+    starttime = req.body.starttime
+
+    if (!req.body["endtime"]) {
+        endtime = new Date().Format("yyyy-MM-dd hh:mm:ss")
+
+    } else {
+        endtime = new Date(req.body.endtime).Format("yyyy-MM-dd hh:mm:ss")
+    }
+
+
+    let data = ''
+    let selector = {
+        "station_id": station_id,
+        "create_at": { [model.Op.between]: [starttime, endtime] }
+    }
+    // console.log($between)
+
+
+    data = await model.sensing_data.findAll({
+        
+        attributes: [
+            [model.fn('AVG', model.col('hot_water_temp')), 'hot_water_temp_AVG'],
+            [model.fn('AVG', model.col('cold_water_temp')), 'cold_water_temp_AVG'],
+            [model.fn('AVG', model.col('cold_water_temp2')), 'cold_water_temp2_AVG'],
+            [model.fn('AVG', model.col('vol')), 'vol_AVG'],
+            [model.fn('AVG', model.col('current')), 'current_AVG'],
+            [model.fn("date", model.col("create_at")), "date"]],
+        where: selector,
+        group: [model.col("date")],
+        order: [model.col("date")],
+        
+    })
+    res.json(data[0])
 
 })
 
