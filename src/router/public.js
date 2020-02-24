@@ -230,7 +230,7 @@ router.post("/powerstation/averge_everyday/:station_id", CommonMiddleware.parse_
         order: [model.col("date")],
         
     })
-    res.json(data[0])
+    res.json(data)
 
 })
 
