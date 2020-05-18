@@ -2,7 +2,7 @@ const config = {
     DB: {
         database: "powerstation",
         user_name: "root",
-        password: "game54176868",
+        password: "root",
         host: "127.0.0.1"
     },
 }
